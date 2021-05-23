@@ -7,8 +7,15 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@better-scroll/core": "^2.3.1",
+    "@better-scroll/observe-dom": "^2.3.1",
+    "@better-scroll/observe-image": "^2.3.1",
+    "@better-scroll/pull-up": "^2.3.1",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "macy": "^2.5.1",
     "normalize.css": "^8.0.1",
+    "vh-check": "^2.0.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
