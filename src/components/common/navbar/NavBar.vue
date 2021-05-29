@@ -19,7 +19,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@height: 44px;
 .nav-bar {
   // * 若使用better-scroll实现滚动则不需要设置以下属性，因为滚动不会涉及到所处位置
   // position: fixed;
@@ -27,12 +26,14 @@ export default {
   // right: 0;
   // left: 0;
   // z-index: 999;
+  position: relative;
+  z-index: 999;
   display: flex;
-  height: @height;
-  line-height: @height;
+  height: var(--nav-bar);
+  line-height: var(--nav-bar);
   width: 100%;
   text-align: center;
-  box-shadow: 0 1px 3px rgba(100, 100, 100, 0.2);
+  box-shadow: 0 2px 5px rgba(100, 100, 100, 0.5);
 }
 
 .left {

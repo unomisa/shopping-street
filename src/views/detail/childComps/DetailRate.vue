@@ -2,7 +2,7 @@
   <div>
     <detail-box>
       <div class="top">
-        <span class="title">优质评价</span>
+        <span class="title">买家评价</span>
         <span class="more">更多</span>
       </div>
       <div class="separator"></div>
@@ -16,7 +16,7 @@
         <div class="images" v-if="'images' in rate">
           <span class="images-item" v-for="(item,index) in rate.images"
             :key="index">
-            <img class="img" :src="item">
+            <img class="img" :src="item" @load="imageLoad">
           </span>
         </div>
       </div>
@@ -40,12 +40,14 @@
 <script>
 import DetailBox from './DetailBox.vue'
 import { formatDate } from 'common/utils'
+import { imageLoad } from 'common/mixin'
 
 /**
  * todo  图片加载监听刷新
  */
 
 export default {
+  mixins: [imageLoad],
   props: {
     rate: {
       type: Object,

@@ -51,7 +51,6 @@ export default {
     // 重新计算BetterScroll
     refresh () {
       this.bscroll.refresh()
-      console.log('刷新')
     },
 
     // 滚动至坐标位置
@@ -67,6 +66,11 @@ export default {
     // 获取已滚动位置
     getScrollY () {
       return this.bscroll ? this.bscroll.y : 0
+    },
+
+    // 滚动到元素
+    scrollToElement (el, time) {
+      this.bscroll && this.bscroll.scrollToElement(el, time)
     },
 
     /**

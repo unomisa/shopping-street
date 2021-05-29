@@ -1,6 +1,6 @@
 <template>
   <div class="commondity-box" @click="clicktest">
-    <img :src="info.showLarge.img" alt="商品图片" @load="imageLoad">
+    <img :src="image" alt="商品图片" @load="imageLoad">
     <div class="commondity-box-info">
       <div class="commondity-box-text">{{info.title}}</div>
       <div>
@@ -23,10 +23,20 @@ export default {
   },
   methods: {
     imageLoad () {
-      this.$bus.$emit('itemImageLoad')
+      this.$bus.$emit('scrollRefresh')
+      this.$bus.$emit('waterfallFlowLayoutRefresh')
     },
     clicktest () {
       this.$router.push(`/detail/${this.info.iid}`)
+    }
+  },
+  computed: {
+    image () {
+      if ('showLarge' in this.info) {
+        return this.info.showLarge.img
+      } else {
+        return this.info.image
+      }
     }
   }
 }

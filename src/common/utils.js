@@ -37,3 +37,8 @@ export function formatDate (date, fmt) {
   }
   return fmt
 }
+
+// 判断是否是浮点数
+export function isFloat (number) {
+  return ~~number !== number
+}

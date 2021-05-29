@@ -1,15 +1,17 @@
+
 <template>
   <div class="feature">
     <a href="#">
-      <img src="@/assets/img/home/recommend_bg.jpg"
-           alt="">
+      <img src="@/assets/img/home/recommend_bg.jpg" @load="imageLoad">
     </a>
   </div>
 </template>
 
 <script>
-export default {
+import { imageLoad } from 'common/mixin'
 
+export default {
+  mixins: [imageLoad]
 }
 </script>
 

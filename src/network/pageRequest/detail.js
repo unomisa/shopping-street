@@ -1,5 +1,10 @@
 import { request } from '../request'
 
+/**
+ * * 网络请求方法
+ */
+
+// 详情数据请求
 export function getDetail (iid) {
   return request({
     url: '/detail',
@@ -9,8 +14,18 @@ export function getDetail (iid) {
   })
 }
 
+// 推荐商品请求
+export function getRecommend(){
+  return request({
+    url: '/recommend',
+  })
+}
+
+/**
+ * * 信息类
+ */
+
 export class GoodsBaseInfo {
-  
   discountDesc='女神优选'
 
   constructor (itemInfo = {}, columns = [], promotions = {}) {
@@ -22,7 +37,7 @@ export class GoodsBaseInfo {
 
     // 商品价格
     this.newPrice = itemInfo.price
-    this.oldPrice = itemInfo.oldPrice
+    this.oldPrice = itemInfo.highPrice
 
     if(itemInfo.discountDesc!==''){
       this.discountDesc = itemInfo.discountDesc
@@ -63,11 +78,11 @@ export class Params{
   }
 }
 
+
+// 评论信息
 export class Rate{
 
-  constructor(rateNumber,rateInfo){
-    this.haveRate=rateNumber!==0
-
+  constructor(rateInfo){
     this.user=rateInfo.user
     this.content=rateInfo.content
     this.created=rateInfo.created
@@ -75,5 +90,31 @@ export class Rate{
 
     'explain' in rateInfo && (this.explain=rateInfo.explain)
     'images' in rateInfo && (this.images=rateInfo.images)
+  }
+}
+
+// 尺码信息
+export class SkuInfo{
+  
+  constructor(skuInfo){
+    this.defaultPrice=skuInfo.defaultPrice // 默认显示价格
+    this.defaultImg=skuInfo.skus[0].img // 默认显示图片
+    this.totalStock=skuInfo.totalStock // 库存总数
+    this.sizeList=skuInfo.props[1].list // 尺码
+    this.colorList=skuInfo.props[0].list // 颜色/类型
+    this.skus=skuInfo.skus // 库存详情
+  }
+}
+
+// 加入的购物车信息
+export class Cart{
+  constructor(info){
+    this.shopName=info.shopName
+    this.title=info.title
+    this.img=info.currentInfo.img
+    this.price=info.currentInfo.nowPrice
+    this.style=info.currentInfo.style
+    this.size=info.currentInfo.size
+    this.buyCount=info.currentInfo.buyCount
   }
 }

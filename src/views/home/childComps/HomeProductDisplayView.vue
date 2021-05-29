@@ -9,14 +9,12 @@
 <script>
 import CommodityBox from 'components/content/commodityBox/CommodityBox.vue'
 import WaterfallFlow from 'components/common/waterfallFlow/waterfallFlow.vue'
+import {
+  inActivatedOnWaterfallFlowRefresh
+} from 'common/mixin'
 
 export default {
   name: 'productDisplay',
-  data () {
-    return {
-      create: true
-    }
-  },
   props: {
     goods: {
       type: Object,
@@ -29,11 +27,9 @@ export default {
     CommodityBox,
     WaterfallFlow
   },
-  methods: {
-    recalculate () {
-      this.$refs.waterfallFlow.recalculate()
-    }
-  }
+  mixins: [
+    inActivatedOnWaterfallFlowRefresh
+  ]
 }
 </script>
 

@@ -10,8 +10,10 @@
 
 <script>
 import MySwiper from 'components/common/myswiper/MySwiper.vue'
-import MySwiperItem from '../../../components/common/myswiper/MySwiperItem.vue'
+import MySwiperItem from 'components/common/myswiper/MySwiperItem.vue'
+import { imageLoad } from 'common/mixin'
 export default {
+  mixins: [imageLoad],
   props: {
     banners: {
       type: Array,
@@ -23,13 +25,7 @@ export default {
   components: {
     MySwiper,
     MySwiperItem
-  },
-  methods: {
-    imageLoad () {
-      this.$bus.$emit('detailImageLoad')
-    }
   }
-
 }
 </script>
 

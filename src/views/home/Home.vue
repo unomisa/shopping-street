@@ -8,7 +8,7 @@
     <scroll class="content" ref="scroll" :probeType="3" :pullUpLoad="true"
       @scroll="scroll" @pullingUp='loadMore'>
 
-      <home-swiper :banners="banners" @homeSwiperImageLoad="SwiperImageLoad" />
+      <home-swiper :banners="banners" />
 
       <home-recommend-view :recommends="recommends" />
 
@@ -22,7 +22,7 @@
 
     </scroll>
 
-    <back-top @click.native="backTop()" :isShow="showBackTopBth" />
+    <back-top @click.native="backTop" :isShow="showBackTopBth" />
   </div>
 </template>
 <script>
@@ -39,7 +39,7 @@ import BackTop from '../../components/common/backtop/BackTop.vue'
 
 import { getHomeMultidata, getHomeGoods } from 'network/pageRequest/home'
 
-import { debounce } from '../../common/utils'
+import { inActivatedOnScrollRefresh } from 'common/mixin'
 
 export default {
   data () {
@@ -57,8 +57,8 @@ export default {
       isTabControlCloneShow: false,
       showBackTopBth: false,
       scrollY: 0,
-      scrollYClone: 0,
-      isActivePage: true
+      scrollYClone: 0
+
     }
   },
   components: {
@@ -71,18 +71,13 @@ export default {
     Scroll,
     BackTop
   },
+  mixins: [
+    inActivatedOnScrollRefresh
+  ],
   methods: {
     /**
      * * 事件监听相关方法
      */
-
-    // 轮播图图片完成监听
-    SwiperImageLoad () {
-      if (!this.isSwiperImageLoad) {
-        this.$refs.scroll.refresh()
-        this.isSwiperImageLoad = true
-      }
-    },
 
     setCurrentCategoryIndex (currentIndex) {
       this.currentCategoryIndex = currentIndex
@@ -93,7 +88,7 @@ export default {
     // 根据位置设置tabControl是否吸附于顶部
     setIsTabControlCloneShow () {
       const tabControl2 = this.$refs.tabControl2.$el
-      this.isTabControlCloneShow = tabControl2.getBoundingClientRect().top < 44
+      this.isTabControlCloneShow = tabControl2.getBoundingClientRect().top < this.$store.state.navBarHeight
     },
 
     // 回到顶部
@@ -105,16 +100,6 @@ export default {
     scroll (position) {
       this.setIsTabControlCloneShow()
       this.showBackTopBth = this.isTabControlCloneShow
-      // 实时记录位置
-      this.scrollY = this.$refs.scroll.getScrollY()
-    },
-
-    itemImageLoadEvent () {
-      // 当前页面不是home页面时，不触发页面的刷新
-      if (this.isActivePage) {
-        this.$refs.scroll.refresh()
-        this.$refs.productDisplay.recalculate()
-      }
     },
 
     /**
@@ -148,26 +133,16 @@ export default {
     this.goods.forEach((item) => {
       this.getHomeGoods(item)
     })
-  },
-  mounted () {
-    // 图片加载完整通过事件总线使macy刷新布局
-    this.$bus.$on('itemImageLoad', debounce(this.itemImageLoadEvent, 100))
-  },
-  activated () {
-    this.$refs.scroll.refresh()
-    this.isActivePage = true
-  },
-  deactivated () {
-    this.isActivePage = false
   }
+
 }
 </script>
 <style lang="less" scoped>
 // * 使用better-scroll滚动区域需要设置固定的高度
 .content {
-  height: calc(100vh - 49px - 44px);
+  height: calc(100vh - 49px - var(--nav-bar));
   height: calc(
-    100vh - var(--vh-offset, 0px) - 49px - 44px
+    100vh - var(--vh-offset, 0px) - 49px - var(--nav-bar)
   ); // 使用vh-check对vh进行正确计算
 }
 
@@ -179,5 +154,6 @@ export default {
 .home-tab-control {
   position: absolute;
   z-index: 999;
+  box-shadow: 0 2px 5px rgba(100, 100, 100, 0.5);
 }
 </style>

@@ -6,9 +6,9 @@
 
 <script>
 export default {
-  mounted () {
-    this.$emit('over')
-  }
+  // mounted () {
+  //   this.$emit('over')
+  // }
 }
 </script>
 

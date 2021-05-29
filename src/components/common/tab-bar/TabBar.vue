@@ -17,8 +17,8 @@ export default {
   bottom: 0;
   display: flex;
   text-align: center;
-  background-color: #f6f6f6;
+  background-color: #fcfcfc;
   height: 49px;
-  box-shadow: 0 -1px 1px rgba(100, 100, 100, 0.2);
+  box-shadow: 0 -1px 3px rgba(100, 100, 100, 0.5);
 }
 </style>

@@ -46,7 +46,6 @@ export default {
 .promotions {
   display: flex;
   align-items: center;
-  justify-content: space-around;
   flex-wrap: wrap;
   font-size: 12px;
   padding: 3px;
@@ -64,6 +63,8 @@ export default {
 // 标题
 .title {
   color: black;
+  text-align: justify;
+
   // font-family: 黑体;
 }
 

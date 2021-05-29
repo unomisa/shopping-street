@@ -3,7 +3,7 @@
     <nav-bar>
       <template v-slot:left>
         <div class="back" @click="back">
-          <img src="~/assets/img/common/back.svg" alt="回退">
+          <img src="~/assets/img/common/back.svg">
         </div>
       </template>
       <template v-slot:center>
@@ -20,18 +20,34 @@
 import NavBar from 'components/common/navbar/NavBar.vue'
 
 export default {
+  props: {
+    // 目标元素数组,根据它们的下标跳转
+    target: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    scroll: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
+  },
   components: {
     NavBar
   },
   data () {
     return {
-      titles: ['商品', '参数', '评论', '推荐'],
+      titles: ['宝贝', '展示', '参数', '推荐'],
       currentIndex: 0
     }
   },
   methods: {
     setCurrentIndex (index) {
       this.currentIndex = index
+      this.scroll.scrollToElement(this.target[index], 300)
     },
     back () {
       this.$router.back()
@@ -45,6 +61,22 @@ export default {
           'title-item-active': this.currentIndex === index
         }
       }
+    }
+  },
+  watch: {
+    scroll: function () {
+      // 根据滚动判断在哪个模块，以当前元素为参照
+      this.scroll.bscroll.on('scroll', () => {
+        const target = this.target[this.currentIndex]
+        if (target.getBoundingClientRect().top > this.$store.state.navBarHeight) {
+          this.currentIndex--
+        } else if (this.currentIndex + 1 < this.target.length) {
+          const next = this.target[this.currentIndex + 1]
+          if (next.getBoundingClientRect().top < this.$store.state.navBarHeight + 1) {
+            this.currentIndex++
+          }
+        }
+      })
     }
   }
 

@@ -20,7 +20,9 @@
 
 <script>
 import DetailBox from './DetailBox.vue'
+import { imageLoad } from 'common/mixin'
 export default {
+  mixins: [imageLoad],
   components: {
     DetailBox
   },
@@ -30,11 +32,6 @@ export default {
       default () {
         return {}
       }
-    }
-  },
-  methods: {
-    imageLoad () {
-      this.$bus.$emit('detailImageLoad')
     }
   }
 }
@@ -58,10 +55,9 @@ export default {
 .show-title {
   &:extend(.title);
   background: url("~assets/img/detail/picture.svg") no-repeat;
-  background-position: right center;
+  background-position: 0 center;
   background-size: 24px;
-  text-align: right;
-  padding-right: 26px;
+  padding-left: 26px;
 }
 
 .separator {
@@ -81,7 +77,6 @@ export default {
   &-show {
     &:extend(.separator);
     margin-bottom: 16px;
-    margin-left: auto;
   }
 }
 

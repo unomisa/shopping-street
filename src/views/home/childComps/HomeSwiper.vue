@@ -14,7 +14,9 @@
 
 <script>
 import { MySwiperItem, MySwiper } from 'components/common/myswiper/index'
+import { imageLoad } from 'common/mixin'
 export default {
+  mixins: [imageLoad],
   props: {
     banners: {
       type: Array,
@@ -26,11 +28,6 @@ export default {
   components: {
     MySwiper,
     MySwiperItem
-  },
-  methods: {
-    imageLoad () {
-      this.$emit('homeSwiperImageLoad')
-    }
   }
 
 }

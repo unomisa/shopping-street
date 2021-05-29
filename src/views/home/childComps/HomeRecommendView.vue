@@ -1,11 +1,9 @@
+
 <template>
   <div class='recommend'>
-    <div v-for="(item,index) in recommends"
-         :key="index"
-         class='recommend-item'>
+    <div v-for="(item,index) in recommends" :key="index" class='recommend-item'>
       <a :href="item.link">
-        <img :src="item.image"
-             alt="">
+        <img :src="item.image" @load="imageLoad">
         {{item.title}}
       </a>
     </div>
@@ -13,7 +11,10 @@
 </template>
 
 <script>
+import { imageLoad } from 'common/mixin'
+
 export default {
+  mixins: [imageLoad],
   props: {
     recommends: {
       type: Array,

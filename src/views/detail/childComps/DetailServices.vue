@@ -20,7 +20,6 @@
 
 <script>
 import DetailBox from './DetailBox.vue'
-import top from '../../../assets/img/common/top.png'
 
 export default {
   props: {

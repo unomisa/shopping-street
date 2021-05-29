@@ -18,7 +18,7 @@
           <div class="about-text">总销量</div>
         </div>
         <div class="about-item">
-          <div class="about-number">{{shopInfo.goodsCount}}万</div>
+          <div class="about-number">{{shopInfo.goodsCount}}</div>
           <div class="about-text">全部宝贝</div>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     imageLoad () {
-      this.$bus.$emit('detailImageLoad')
+      this.$bus.$emit('scrollRefresh')
     }
   }
 
