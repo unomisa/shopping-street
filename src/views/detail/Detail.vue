@@ -45,17 +45,18 @@ import DetailBottomBar from './childComps/DetailBottomBar.vue'
 
 import Scroll from 'components/common/scroll/Scroll.vue'
 import BackTop from 'components/common/backtop/BackTop.vue'
+import DetailSkuInfo from 'components/content/skuInfo/SkuInfo.vue'
 
 import { getDetail, GoodsBaseInfo, ShopInfo, Show, Params, Rate, getRecommend, SkuInfo, Cart }
   from 'network/pageRequest/detail'
 
 import { inCreatedOnScrollRefresh } from 'common/mixin'
-import DetailSkuInfo from './childComps/DetailSkuInfo.vue'
 
 export default {
   name: 'detail',
   data () {
     return {
+      iid: '',
       topImages: [], // 轮播图
       scrollEle: [], // 需要定位的元素
       GoodsBaseInfo: {}, // 商品基本
@@ -105,21 +106,27 @@ export default {
     // 打开库存信息
     openInventory () {
       this.isShowSkuInfo = true
+      this.$bus.$emit('pageDormant') // 开启页面休眠
     },
 
     // 关闭库存信息
     closeInventory () {
       this.isShowSkuInfo = false
+      this.$bus.$emit('cancelPageDormant') // 关闭页面休眠
     },
 
     // 添加商品至购物车
     addToCart (currentInfo) {
       const info = {
+        iid: this.iid,
         currentInfo: currentInfo,
         shopName: this.shopInfo.name,
         title: this.GoodsBaseInfo.title
       }
       this.$store.dispatch('addToCart', new Cart(info))
+        .then((message) => {
+          this.$toast.show(message) // 加入购物车完成,显示提示信息
+        })
     }
 
   },
@@ -128,6 +135,9 @@ export default {
       .then((res) => {
         console.log(res)
         const data = res.result
+
+        // 商品唯一iid
+        this.iid = res.iid
 
         // 顶部轮播图
         this.topImages = data.itemInfo.topImages

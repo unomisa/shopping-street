@@ -26,6 +26,7 @@ export function getRecommend(){
  */
 
 export class GoodsBaseInfo {
+
   discountDesc='女神优选'
 
   constructor (itemInfo = {}, columns = [], promotions = {}) {
@@ -109,6 +110,8 @@ export class SkuInfo{
 // 加入的购物车信息
 export class Cart{
   constructor(info){
+    this.iid=info.iid
+    this.isChecked=false
     this.shopName=info.shopName
     this.title=info.title
     this.img=info.currentInfo.img

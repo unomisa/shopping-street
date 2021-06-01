@@ -2,6 +2,35 @@
  * * 存放公共工具函数
  */
 
+// 节流函数
+export function throttle (func, ms) {
+  let isThrottled = false
+  let savedArgs
+  let savedThis
+
+  function wrapper () {
+    if (isThrottled) { // (2)
+      savedArgs = arguments
+      savedThis = this
+      return
+    }
+
+    func.apply(this, arguments) // (1)
+
+    isThrottled = true
+
+    setTimeout(function () {
+      isThrottled = false // (3)
+      if (savedArgs) {
+        wrapper.apply(savedThis, savedArgs)
+        savedArgs = savedThis = null
+      }
+    }, ms)
+  }
+
+  return wrapper
+}
+
 // 防抖动函数
 export function debounce (func, delay = 300) {
   let timer

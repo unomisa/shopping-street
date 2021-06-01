@@ -3,7 +3,7 @@
     <fillet-box id='fillet-box' class="box" v-for="(cartItem,index) in cart"
       :key="index">
       <div class="box-shop">
-        <div :class="selectClass(cartItem)"
+        <div :class="shopCheckClass(cartItem)"
           @click="checkShopAll(cartItem,$event)" ref="select"></div>
 
         {{cartItem[0].shopName}}
@@ -11,7 +11,8 @@
       </div>
 
       <div class="box-content" v-for="(item,index) in cartItem" :key="index">
-        <div :class="selectGoodsClass(item)" @click="check(item)" ref="select">
+        <div class='select-goods' :class="{checked: item.isChecked}"
+          @click="check(item)" ref="select">
         </div>
 
         <div class="box-img">
@@ -20,7 +21,7 @@
         <div class="box-info">
           <div class="goods-title">{{item.title}}</div>
 
-          <div class="goods-parameter">
+          <div class="goods-parameter" @click="modifyParameter(item)">
             <span class="cut-out">{{item.size}} , {{item.style}}</span>
           </div>
 
@@ -29,7 +30,8 @@
             {{priceContent(item)}}<span class="small">{{priceEnd(item)}}</span>
           </div>
 
-          <div class="buy-count-box" @click="showCalcBtn(item)">
+          <div class="buy-count-box" @click="showCalcBtn(item)"
+            v-if='!isShowCalcBtn(item)'>
             ×{{item.buyCount}}
           </div>
 
@@ -48,7 +50,7 @@ import Scroll from 'components/common/scroll/Scroll.vue'
 import FilletBox from 'components/common/filletBox/FilletBox.vue'
 import AddSubBtn from 'components/common/miniComps/addSubBtn.vue'
 
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { isFloat } from 'common/utils'
 
 export default {
@@ -65,33 +67,25 @@ export default {
   methods: {
     // * 事件处理方法
 
-    // 点击，若商品不存在该待结算数组，贼添加，否则删除
+    // 点击，判断商品是否被选中
     check (item) {
-      if (!this.readyToSettle.includes(item)) {
-        this.addReadyToSettle(item)
-      } else {
-        this.removeReadyToSettle(item)
-      }
+      this.changeIsChecked(item)
     },
 
-    // 将该店所有商品添加至待结算数组
+    // 将该店所有商品选中
     checkShopAll (cartItem, event) {
       const target = event.currentTarget
       if (!target.classList.contains('checked')) {
-        cartItem.forEach((item) => {
-          if (!this.readyToSettle.includes(item)) { this.addReadyToSettle(item) }
-        })
+        this.checkedShopAll(cartItem)
       } else {
-        cartItem.forEach(item => {
-          this.removeReadyToSettle(item)
-        })
+        this.unCheckedShopAll(cartItem)
       }
     },
 
     // 判断该店商品是否都在待结算数组
     allGoodsINReadyToSettle (goodsList) {
       for (const goods of goodsList) {
-        if (!this.readyToSettle.includes(goods)) {
+        if (!goods.isChecked) {
           return false
         }
       }
@@ -103,14 +97,10 @@ export default {
       const target = event.currentTarget
       if (!target.classList.contains('checked')) {
         this.cart.forEach(cartItem => {
-          cartItem.forEach(item => {
-            if (!this.readyToSettle.includes(item)) {
-              this.addReadyToSettle(item)
-            }
-          })
+          this.checkedShopAll(cartItem)
         })
       } else {
-        this.clearReadyToSettle()
+        this.unCheckedAll()
       }
     },
 
@@ -134,12 +124,23 @@ export default {
       }
     },
 
+    // 修改参数
+    modifyParameter (item) {
+      this.$emit('modifyParameter', item)
+    },
+
     ...mapMutations([
-      'addReadyToSettle',
-      'removeReadyToSettle',
-      'clearReadyToSettle',
+      'changeIsChecked',
       'addBuyCount',
-      'subBuyCount'
+      'subBuyCount',
+      'checked',
+      'unChecked'
+    ]),
+
+    ...mapActions([
+      'checkedShopAll',
+      'unCheckedShopAll',
+      'unCheckedAll'
     ]),
 
     // * 其它方法
@@ -181,19 +182,11 @@ export default {
         }
       }
     },
-    selectClass () {
+    shopCheckClass () {
       return function (goodsList) {
         return {
           select: true,
           checked: this.allGoodsINReadyToSettle(goodsList)
-        }
-      }
-    },
-    selectGoodsClass () {
-      return function (item) {
-        return {
-          'select-goods': true,
-          checked: this.readyToSettle.includes(item)
         }
       }
     },
@@ -359,8 +352,7 @@ export default {
   position: absolute;
   bottom: 1px;
   right: 0;
-  height: 1.3rem;
-  width: 1.3rem;
+  padding: 2px;
   border-radius: 3px;
   border: 1px solid lightgray;
   font-size: 14px;

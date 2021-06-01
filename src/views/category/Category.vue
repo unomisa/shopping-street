@@ -1,123 +1,57 @@
 <template>
   <div>
-    <scroll class="category-content">
-      <ul>
-        <li>填充1</li>
-        <li>填充2</li>
-        <li>填充3</li>
-        <li>填充4</li>
-        <li>填充5</li>
-        <li>填充6</li>
-        <li>填充7</li>
-        <li>填充8</li>
-        <li>填充9</li>
-        <li>填充10</li>
-        <li>填充11</li>
-        <li>填充12</li>
-        <li>填充13</li>
-        <li>填充14</li>
-        <li>填充15</li>
-        <li>填充16</li>
-        <li>填充17</li>
-        <li>填充18</li>
-        <li>填充19</li>
-        <li>填充20</li>
-        <li>填充21</li>
-        <li>填充22</li>
-        <li>填充23</li>
-        <li>填充24</li>
-        <li>填充25</li>
-        <li>填充26</li>
-        <li>填充27</li>
-        <li>填充28</li>
-        <li>填充29</li>
-        <li>填充30</li>
-        <li>填充31</li>
-        <li>填充32</li>
-        <li>填充33</li>
-        <li>填充34</li>
-        <li>填充35</li>
-        <li>填充36</li>
-        <li>填充37</li>
-        <li>填充38</li>
-        <li>填充39</li>
-        <li>填充40</li>
-        <li>填充41</li>
-        <li>填充42</li>
-        <li>填充43</li>
-        <li>填充44</li>
-        <li>填充45</li>
-        <li>填充46</li>
-        <li>填充47</li>
-        <li>填充48</li>
-        <li>填充49</li>
-        <li>填充50</li>
-        <li>填充51</li>
-        <li>填充52</li>
-        <li>填充53</li>
-        <li>填充54</li>
-        <li>填充55</li>
-        <li>填充56</li>
-        <li>填充57</li>
-        <li>填充58</li>
-        <li>填充59</li>
-        <li>填充60</li>
-        <li>填充61</li>
-        <li>填充62</li>
-        <li>填充63</li>
-        <li>填充64</li>
-        <li>填充65</li>
-        <li>填充66</li>
-        <li>填充67</li>
-        <li>填充68</li>
-        <li>填充69</li>
-        <li>填充70</li>
-        <li>填充71</li>
-        <li>填充72</li>
-        <li>填充73</li>
-        <li>填充74</li>
-        <li>填充75</li>
-        <li>填充76</li>
-        <li>填充77</li>
-        <li>填充78</li>
-        <li>填充79</li>
-        <li>填充80</li>
-        <li>填充81</li>
-        <li>填充82</li>
-        <li>填充83</li>
-        <li>填充84</li>
-        <li>填充85</li>
-        <li>填充86</li>
-        <li>填充87</li>
-        <li>填充88</li>
-        <li>填充89</li>
-        <li>填充90</li>
-        <li>填充91</li>
-        <li>填充92</li>
-        <li>填充93</li>
-        <li>填充94</li>
-        <li>填充95</li>
-        <li>填充96</li>
-        <li>填充97</li>
-        <li>填充98</li>
-        <li>填充99</li>
-        <li>填充100</li>
-      </ul>
-    </scroll>
+    <nav-bar class="nav-bar">
+      <template v-slot:center>
+        商品分类
+      </template>
+    </nav-bar>
+    <div class="content">
+      <category-left-nav :categoryList="categoryList" />
+
+      <category-right-content />
+    </div>
   </div>
 </template>
 <script>
-import Scroll from '../../components/common/scroll/Scroll.vue'
+import NavBar from 'components/common/navbar/NavBar.vue'
+import CategoryLeftNav from './childComps/CategoryLeftNav.vue'
+import CategoryRightContent from './childComps/CategoryRightContent.vue'
+
+import { getCategory } from 'network/pageRequest/category'
+
 export default {
-  components: { Scroll },
-  mounted () {
+  components: {
+    NavBar,
+    CategoryLeftNav,
+    CategoryRightContent
+  },
+  data () {
+    return {
+      categoryList: []
+    }
+  },
+  created () {
+    getCategory()
+      .then(res => {
+        this.categoryList = res.data.category.list
+        console.log(this.categoryList)
+      })
   }
 }
 </script>
 <style lang="less" scoped>
-.category-content {
-  height: 300px;
+.content {
+  display: flex;
+  height: calc(100vh - 49px - var(--nav-bar));
+  height: calc(
+    100vh - var(--vh-offset, 0px) - 49px - var(--nav-bar)
+  ); // 使用vh-check对vh进行正确计算
   background-color: plum;
-  // overflow: auto;
+}
+
+.nav-bar {
+  background-color: var(--color-tint);
+  color: white;
+  font-size: 18px;
 }
 </style>

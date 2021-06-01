@@ -10,9 +10,9 @@
     <detail-box>
       <div class="show-title">商品展示</div>
       <div class="separator-show"></div>
-      <div>
-        <img :src="item" class="image" v-for="(item,index) in show.imageList"
-          :key="index" @load="imageLoad">
+      <div class="placeholder-box" :style="{'padding-top': aspectRatio(item)}"
+        v-for="(item,index) in show.imageList" :key=" index">
+        <img v-lazy="item" class="loading-img" @load="imageLoad">
       </div>
     </detail-box>
   </div>
@@ -85,7 +85,15 @@ export default {
   line-height: 1.5;
 }
 
-.image {
+.placeholder-box {
+  position: relative;
+}
+
+.loading-img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
 }
 </style>

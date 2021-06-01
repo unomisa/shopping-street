@@ -8,32 +8,31 @@
     </div>
     <div class="box-right">
       <div class="settle-accounts-left">结</div>
-      <div class="settle-accounts-right">算</div>
+      <div class="settle-accounts-right">算({{selectedGoodsLength}})</div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { isFloat } from '../../../common/utils'
+import { isFloat } from 'common/utils'
 
 export default {
   methods: {
     checkAll (event) {
       this.$bus.$emit('checkAll', event)
     },
-    isCheckAll () {
+    isCheckedAll () {
       if (this.cart.length === 0) { return false }
       for (const cartItem of this.cart) {
         for (const item of cartItem) {
-          if (!this.readyToSettle.includes(item)) {
+          if (!item.isChecked) {
             return false
           }
         }
       }
       return true
     }
-
   },
   computed: {
     ...mapState([
@@ -43,21 +42,47 @@ export default {
     selectAllClass () {
       return {
         'select-all': true,
-        checked: this.isCheckAll()
+        checked: this.isCheckedAll()
       }
     },
+
+    // 总价
     total () {
-      return this.readyToSettle.reduce((sum, currentItem) => {
-        sum += parseFloat(currentItem.price.slice(1)) * currentItem.buyCount
-        return sum
-      }, 0)
+      // return this.cart.reduce((sum, cartItem) => {
+      //   return cartItem.reduce((sum, currentItem) => {
+      //     if (currentItem.isChecked) {
+      //       sum += parseFloat(currentItem.price.slice(1)) * currentItem.buyCount
+      //     }
+      //     return sum
+      //   }, sum)
+      // }, 0)
+      let total = 0
+      for (const cartItem of this.cart) {
+        total += cartItem.filter(item => item.isChecked)
+          .reduce((sum, currentItem) => {
+            sum += parseFloat(currentItem.price.slice(1)) * currentItem.buyCount
+            return sum
+          }, 0)
+      }
+      return total
     },
+
+    // 小数部分
     decimalPart () {
       if (isFloat(this.total)) {
         return this.total.toString().split('.')[1].slice(0, 2)
       } else {
         return ''
       }
+    },
+
+    // 已选中的商品个数
+    selectedGoodsLength () {
+      let length = 0
+      for (const cartItem of this.cart) {
+        length += cartItem.filter(item => item.isChecked).length
+      }
+      return length
     }
   }
 
@@ -124,23 +149,25 @@ export default {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 
+  @borderRadius: 16px;
+  @sidePadding: 1rem;
   &-left {
     &:extend(.settle-accounts);
-    padding-left: 1.5rem;
-    border-top-left-radius: 45%;
-    border-bottom-left-radius: 45%;
+    padding-left: @sidePadding;
+    border-top-left-radius: @borderRadius;
+    border-bottom-left-radius: @borderRadius;
   }
 
   &-right {
     &:extend(.settle-accounts);
-    padding-right: 1.5rem;
-    border-top-right-radius: 45%;
-    border-bottom-right-radius: 45%;
+    padding-right: @sidePadding;
+    border-top-right-radius: @borderRadius;
+    border-bottom-right-radius: @borderRadius;
   }
 }
 
 .small {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .price {

@@ -31,7 +31,7 @@ export default {
 
 <style lang="less" scoped>
 .swiper {
-  height: 280px;
+  height: 350px;
   img {
     object-fit: cover;
   }

@@ -5,7 +5,7 @@
     </keep-alive>
     <main-tab-bar v-show="isShowMainTabBar" />
 
-    <prompt-message :message='"添加购物车成功 ~"' v-if="isShowAddToCartMessage" />
+    <all-pages-show />
   </div>
 </template>
 
@@ -13,33 +13,19 @@
 // eslint-disable-next-line no-unused-vars
 import normalize from 'normalize.css'
 import MainTabBar from 'components/content/mainTabbar/MainTabBar.vue'
-import PromptMessage from 'components/common/miniComps/PromptMessage.vue'
+import AllPagesShow from './components/content/allPagesShow/AllPagesShow.vue'
 
 export default {
-  data () {
-    return {
-      isShowAddToCartMessage: false
-    }
-  },
   components: {
     MainTabBar,
-    PromptMessage
+    AllPagesShow
+
   },
   computed: {
+
     isShowMainTabBar () {
       return !this.$route.path.includes('/detail')
     }
-  },
-  methods: {
-    addToCartPromptMessage () {
-      this.isShowAddToCartMessage = true
-      setTimeout(() => {
-        this.isShowAddToCartMessage = false
-      }, 3000)
-    }
-  },
-  created () {
-    this.$bus.$on('addToCartPromptMessage', this.addToCartPromptMessage)
   }
 }
 </script>

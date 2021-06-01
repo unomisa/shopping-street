@@ -148,6 +148,12 @@ export default {
   },
   destroyed () {
     clearInterval(this.timer) // 被销毁之后清除定时器
+  },
+  activated () {
+    this.autoMove() // 活跃，开始轮播
+  },
+  deactivated () {
+    clearInterval(this.timer) // 失去活跃，暂停轮播
   }
 }
 </script>

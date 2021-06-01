@@ -3,7 +3,9 @@
 
     <div class="head">
       <div class="close-btn" @click="closeInventory"></div>
-      <span><img :src="currentSku.img" class="head-img"></span>
+      <div class="img-box">
+        <img :src="currentSku.img" class="head-img" :key="skuInfo.iid">
+      </div>
 
       <span class="head-price">{{currentSku.nowPrice}}</span>
     </div>
@@ -34,14 +36,14 @@
 
       <div class="separator" />
 
-      <div class="count">
+      <div class="count" v-if="!$route.path.includes('cart')">
         <span>购买数量</span>
         <span class="inventory">库存{{currentSku.stock}}件</span>
         <add-sub-btn class="buy-count-calc" :count='buyCount'
           @addCount="addCount" @subCount="subCount" />
       </div>
 
-      <div class="separator" />
+      <div class="separator" v-if="!$route.path.includes('cart')" />
 
     </scroll>
 
@@ -55,8 +57,10 @@
 <script>
 import Scroll from 'components/common/scroll/Scroll.vue'
 import AddSubBtn from 'components/common/miniComps/addSubBtn.vue'
+import { imageLoad } from 'common/mixin'
 
 export default {
+  mixins: [imageLoad],
   props: {
     skuInfo: {
       type: Object,
@@ -105,8 +109,9 @@ export default {
     // 确认选择信息，加入购物车
     addToCart () {
       // 选中商品时传递添加至购物车事件
-      this.skusIndex > -1 && this.$emit('addToCart', this.currentSku)
-      this.$bus.$emit('addToCartPromptMessage')
+      if (this.skusIndex > -1) {
+        this.$emit('addToCart', this.currentSku)
+      }
     },
 
     // 数量增加
@@ -179,6 +184,9 @@ export default {
         this.$refs.scroll.refresh()
       })
     }
+  },
+  destroyed () {
+    this.closeInventory()
   }
 }
 </script>
@@ -199,7 +207,7 @@ export default {
 .sku-info {
   content: "";
   position: fixed;
-  z-index: 1000;
+  z-index: 1001;
   bottom: 0;
   left: 0;
   right: 0;
@@ -227,6 +235,10 @@ export default {
   background-position: 0;
 }
 
+.placeholder-box {
+  position: relative;
+}
+
 // 组件顶部区域样式
 @headHeight: 120px;
 @headPadding: 8px;
@@ -241,6 +253,8 @@ export default {
 
   &-img {
     height: 100%;
+    width: 100%;
+    object-fit: cover;
     vertical-align: top;
     border-radius: 3px;
   }
@@ -250,6 +264,12 @@ export default {
     font-size: 1.5rem;
     color: var(--color-tint);
   }
+}
+
+.img-box {
+  float: left;
+  height: 100%;
+  width: 75px;
 }
 
 // 可滚动内容区域样式

@@ -1,9 +1,15 @@
 import { debounce } from './utils'
 
-import BackTop from 'components/common/backtop/BackTop.vue'
-
 // 图片加载完成处理事件
 export const imageLoad = {
+  computed: {
+    aspectRatio () {
+      return function (item) {
+        const sizeArr = item.match(/\d+x\d+/)[0].split('x')
+        return (sizeArr[1] / sizeArr[0]) * 100 + '%'
+      }
+    }
+  },
   methods: {
     imageLoad () {
       this.$bus.$emit('scrollRefresh')

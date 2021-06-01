@@ -97,7 +97,7 @@ export default {
     },
 
     // 滚动监听
-    scroll (position) {
+    scroll () {
       this.setIsTabControlCloneShow()
       this.showBackTopBth = this.isTabControlCloneShow
     },
@@ -144,11 +144,13 @@ export default {
   height: calc(
     100vh - var(--vh-offset, 0px) - 49px - var(--nav-bar)
   ); // 使用vh-check对vh进行正确计算
+  background-color: white;
 }
 
 .home-nav {
   background-color: var(--color-tint);
   color: white;
+  font-size: 18px;
 }
 
 .home-tab-control {

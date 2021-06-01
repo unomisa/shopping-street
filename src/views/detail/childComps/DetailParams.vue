@@ -46,7 +46,7 @@ export default {
   }
 
   &-info {
-    &:extend(.params-info);
+    width: 100%;
   }
 
   &-desc {

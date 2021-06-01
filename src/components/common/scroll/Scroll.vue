@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper" ref='wrapper'>
-    <div class="content">
+  <div class="scroll-wrapper" ref='wrapper'>
+    <div class="scroll-content">
       <slot></slot>
     </div>
   </div>
@@ -104,7 +104,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.content {
+.scroll-wrapper {
   overflow: hidden;
 }
 </style>

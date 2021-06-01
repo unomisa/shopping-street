@@ -12,8 +12,10 @@
 
 <script>
 import { imageLoad } from 'common/mixin'
+import DetailBox from '../../detail/childComps/DetailBox.vue'
 
 export default {
+  components: { DetailBox },
   mixins: [imageLoad],
   props: {
     recommends: {

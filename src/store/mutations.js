@@ -4,28 +4,6 @@ export default {
   addGoods (state, payload) {
     payload.goodsList.push(payload.goods)
     payload.goodsList.length === 1 && state.cart.push(payload.goodsList)
-    // console.log('添加后为:', state.cart)
-  },
-
-  // 数量增加
-  addNumber (state, payload) {
-    payload.currentGoods.buyCount++
-  },
-
-  // 添加商品至待结算数组
-  addReadyToSettle (state, item) {
-    state.readyToSettle.push(item)
-  },
-
-  // 删除在待结算数组中的商品
-  removeReadyToSettle (state, item) {
-    const list = state.readyToSettle
-    list.splice(list.indexOf(item), 1)
-  },
-
-  // 清空待结算中的商品
-  clearReadyToSettle (state) {
-    state.readyToSettle = []
   },
 
   // 购买数量增加
@@ -36,5 +14,28 @@ export default {
   // 购买数量减少
   subBuyCount (state, item) {
     item.buyCount--
+  },
+
+  // 更改是否选中状态
+  changeIsChecked (state, item) {
+    item.isChecked = !item.isChecked
+  },
+
+  // 选中商品
+  checked (state, item) {
+    item.isChecked = true
+  },
+
+  // 取消选中商品
+  unChecked (state, item) {
+    item.isChecked = false
+  },
+
+  // 修改商品信息
+  goodsInfoChange (state, payload) {
+    payload.oldGoods.size = payload.newGoods.size
+    payload.oldGoods.style = payload.newGoods.style
+    payload.oldGoods.img = payload.newGoods.img
   }
+
 }

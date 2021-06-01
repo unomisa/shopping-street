@@ -1,24 +1,25 @@
 
 <template>
-  <div class="feature">
+  <div>
     <a href="#">
-      <img src="@/assets/img/home/recommend_bg.jpg" @load="imageLoad">
+      <img class='img' src="@/assets/img/home/recommend_bg.jpg"
+        @load="imageLoad">
     </a>
   </div>
 </template>
 
 <script>
 import { imageLoad } from 'common/mixin'
+import DetailBox from '../../detail/childComps/DetailBox.vue'
 
 export default {
+  components: { DetailBox },
   mixins: [imageLoad]
 }
 </script>
 
 <style lang="less" scoped>
-.feature {
-  img {
-    width: 100%;
-  }
+.img {
+  width: 100.2%;
 }
 </style>

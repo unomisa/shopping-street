@@ -1,6 +1,10 @@
 <template>
   <div class="commondity-box" @click="clicktest">
-    <img :src="image" alt="商品图片" @load="imageLoad">
+    <!-- <img :src="image" alt="商品图片" @load="imageLoad"> -->
+    <div :style="{'padding-top': aspectRatio}" class="aspect-ratio-box">
+      <img class="aspect-ratio-box-img" v-lazy="image" @load="imageLoad">
+    </div>
+
     <div class="commondity-box-info">
       <div class="commondity-box-text">{{info.title}}</div>
       <div>
@@ -37,6 +41,13 @@ export default {
       } else {
         return this.info.image
       }
+    },
+    aspectRatio () {
+      if ('showLarge' in this.info) {
+        const showLarge = this.info.showLarge
+        return (showLarge.h / showLarge.w) * 100 + '%'
+      }
+      return '150%'
     }
   }
 }
@@ -75,6 +86,18 @@ export default {
       padding-left: 14px;
       margin-left: 6px;
     }
+  }
+}
+
+.aspect-ratio-box {
+  position: relative;
+
+  &-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>
