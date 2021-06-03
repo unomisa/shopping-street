@@ -22,30 +22,24 @@ export default {
       default () {
         return []
       }
-    }
-  },
-  data () {
-    return {
-      currentIndex: 0
+    },
+    currentIndex: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
     setCurrentIndex (index) {
-      this.currentIndex = index
+      this.$emit('update:currentIndex', index)
     }
   },
-  updated () {
-    this.$refs.scroll.refresh()
-    console.log('刷新')
+  watch: {
+    categoryList () {
+      this.$nextTick(() => {
+        this.$refs.scroll.refresh()
+      })
+    }
   }
-  // watch: {
-  //   categoryList () {
-  //     console.log('数据改变')
-  //     this.$nextTick(() => {
-  //       this.$refs.scroll.refresh()
-  //     })
-  //   }
-  // }
 }
 </script>
 

@@ -1,9 +1,10 @@
 <template>
   <div class="home">
     <nav-bar class="home-nav"><template v-slot:center>购物街</template></nav-bar>
+
     <tab-control class="home-tab-control" :category="['流行','新款','精选']"
-      @currentCategoryChange="setCurrentCategoryIndex"
-      v-show="isTabControlCloneShow" ref="tabControl1" />
+      :currentIndex.sync="currentCategoryIndex"
+      v-show="isTabControlCloneShow" />
 
     <scroll class="content" ref="scroll" :probeType="3" :pullUpLoad="true"
       @scroll="scroll" @pullingUp='loadMore'>
@@ -15,11 +16,14 @@
       <home-feature-view />
 
       <tab-control :category="['流行','新款','精选']"
-        @currentCategoryChange="setCurrentCategoryIndex" ref="tabControl2" />
+        :currentIndex.sync="currentCategoryIndex" ref="tabControl" />
 
-      <home-product-display-view :goods="goods[currentCategoryIndex]"
-        ref="productDisplay" />
-
+      <keep-alive>
+        <home-product-display-view :goods="goods[currentCategoryIndex].list"
+          @refresh='refresh' @saveScrollHeight="saveScrollHeight"
+          @scrollTo="scrollTo" :key="currentCategoryIndex" ref="productDisplay"
+          v-if='goods[currentCategoryIndex].list.length!==0' />
+      </keep-alive>
     </scroll>
 
     <back-top @click.native="backTop" :isShow="showBackTopBth" />
@@ -34,18 +38,17 @@ import TabControl from 'components/content/tabcontrol/TabControl.vue'
 import HomeProductDisplayView from './childComps/HomeProductDisplayView.vue'
 
 import NavBar from 'components/common/navbar/NavBar.vue'
-import Scroll from '../../components/common/scroll/Scroll.vue'
-import BackTop from '../../components/common/backtop/BackTop.vue'
+import Scroll from 'components/common/scroll/Scroll.vue'
+import BackTop from 'components/common/backtop/BackTop.vue'
 
 import { getHomeMultidata, getHomeGoods } from 'network/pageRequest/home'
-
-import { inActivatedOnScrollRefresh } from 'common/mixin'
+import { heightDispose } from 'common/mixin'
 
 export default {
+  mixins: [heightDispose],
   data () {
     return {
       banners: [],
-      isSwiperImageLoad: false,
       recommends: [],
       goods: [
         // * 注意数据的顺序需要和目录的顺序相同
@@ -54,11 +57,7 @@ export default {
         { type: 'sell', page: 0, list: [] }
       ],
       currentCategoryIndex: 0,
-      isTabControlCloneShow: false,
-      showBackTopBth: false,
-      scrollY: 0,
-      scrollYClone: 0
-
+      showBackTopBth: false
     }
   },
   components: {
@@ -71,25 +70,10 @@ export default {
     Scroll,
     BackTop
   },
-  mixins: [
-    inActivatedOnScrollRefresh
-  ],
   methods: {
     /**
      * * 事件监听相关方法
      */
-
-    setCurrentCategoryIndex (currentIndex) {
-      this.currentCategoryIndex = currentIndex
-      this.$refs.tabControl1.currentIndex = currentIndex
-      this.$refs.tabControl2.currentIndex = currentIndex
-    },
-
-    // 根据位置设置tabControl是否吸附于顶部
-    setIsTabControlCloneShow () {
-      const tabControl2 = this.$refs.tabControl2.$el
-      this.isTabControlCloneShow = tabControl2.getBoundingClientRect().top < this.$store.state.navBarHeight
-    },
 
     // 回到顶部
     backTop () {
@@ -156,6 +140,7 @@ export default {
 .home-tab-control {
   position: absolute;
   z-index: 999;
+  border-radius: 2px;
   box-shadow: 0 2px 5px rgba(100, 100, 100, 0.5);
 }
 </style>

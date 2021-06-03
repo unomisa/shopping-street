@@ -1,6 +1,5 @@
 <template>
-  <div class="commondity-box" @click="clicktest">
-    <!-- <img :src="image" alt="商品图片" @load="imageLoad"> -->
+  <div class="commondity-box" @click="routeSwitch">
     <div :style="{'padding-top': aspectRatio}" class="aspect-ratio-box">
       <img class="aspect-ratio-box-img" v-lazy="image" @load="imageLoad">
     </div>
@@ -30,7 +29,7 @@ export default {
       this.$bus.$emit('scrollRefresh')
       this.$bus.$emit('waterfallFlowLayoutRefresh')
     },
-    clicktest () {
+    routeSwitch () {
       this.$router.push(`/detail/${this.info.iid}`)
     }
   },
@@ -38,8 +37,10 @@ export default {
     image () {
       if ('showLarge' in this.info) {
         return this.info.showLarge.img
-      } else {
+      } else if ('image' in this.info) {
         return this.info.image
+      } else {
+        return this.info.img
       }
     },
     aspectRatio () {

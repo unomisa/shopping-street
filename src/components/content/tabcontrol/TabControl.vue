@@ -15,17 +15,15 @@ export default {
       default () {
         return []
       }
-    }
-  },
-  data () {
-    return {
-      currentIndex: 0
+    },
+    currentIndex: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
     setCurrentIndex (index) {
-      this.currentIndex = index
-      this.$emit('currentCategoryChange', this.currentIndex)
+      this.$emit('update:currentIndex', index)
     }
   },
   computed: {

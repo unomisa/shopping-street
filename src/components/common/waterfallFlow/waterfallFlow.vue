@@ -45,10 +45,20 @@ export default {
     // 刷新瀑布流布局
     recalculate (bool = true) {
       this.macy.recalculate(bool)
+    },
+
+    // 事件添加方法
+    addEvent () {
+      // 监听重新计算高度时
+      this.macy.on(this.macy.constants.EVENT_RECALCULATED, () => {
+        this.$emit('recalculated')
+      })
     }
   },
   mounted () {
     this.createMacy()
+    this.addEvent()
+    this.recalculate() // 经测试,这里刷新一次更能保证布局的准确性
   }
 }
 </script>
