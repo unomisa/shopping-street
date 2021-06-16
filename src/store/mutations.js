@@ -6,6 +6,21 @@ export default {
     payload.goodsList.length === 1 && state.cart.push(payload.goodsList)
   },
 
+  // 删除商品
+  deleteGoods (state) {
+    const cart = state.cart
+    for (let i = 0; i < cart.length; i++) {
+      for (let j = 0; j < cart[i].length; j++) {
+        if (cart[i][j].isChecked === true) {
+          cart[i].splice(j, 1)
+          j-- // 这里的减是因为如果只删除的话，数组长度将会响应减少导致后续元素可能无法遍历到
+        }
+      }
+      // 若某个店铺商品为空则删除
+      cart[i].length === 0 && state.cart.splice(state.cart.indexOf(cart[i]), 1) && i--
+    }
+  },
+
   // 购买数量增加
   addBuyCount (state, item) {
     item.buyCount++

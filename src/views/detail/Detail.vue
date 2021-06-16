@@ -1,33 +1,50 @@
 <template>
-  <div class="detail">
-    <detail-nav-bar class="detail-nav-bar" :target="this.scrollEle"
-      :scroll="this.$refs.scroll" />
-    <scroll class="content" ref="scroll" @scroll="scroll" :probeType="3">
-      <detail-swiper :banners="topImages" v-if="topImages.length!==0" />
+  <transition name="van-slide-right">
+    <div class="detail">
+      <detail-nav-bar class="detail-nav-bar"
+                      :target="this.scrollEle"
+                      :scroll="this.$refs.scroll" />
+      <scroll class="content"
+              ref="scroll"
+              @scroll="scroll"
+              :probeType="3">
+        <detail-swiper :banners="topImages" />
 
-      <detail-base-info :goodsBaseInfo="GoodsBaseInfo" />
+        <van-skeleton title
+                      :row="6"
+                      :loading="loading">
+          <detail-base-info :goodsBaseInfo="GoodsBaseInfo" />
 
-      <detail-rate :rate="rate" v-if="this.haveRate" />
+          <detail-rate :rate="rate"
+                       v-if="this.haveRate" />
 
-      <detail-shop-info :shopInfo="shopInfo" />
+          <detail-shop-info :shopInfo="shopInfo" />
 
-      <detail-services :services="services" />
+          <detail-services :services="services" />
 
-      <detail-show :show="show" ref="show" />
+          <detail-show :show="show"
+                       ref="show" />
 
-      <detail-params :params="params" ref="params" />
+          <detail-params :params="params"
+                         ref="params" />
 
-      <detail-recommend :recommendList="recommendList" ref="recommend" />
-    </scroll>
+          <detail-recommend :recommendList="recommendList"
+                            ref="recommend" />
+        </van-skeleton>
+      </scroll>
 
-    <back-top class="back-top" @click.native="backTop()"
-      :isShow="this.isShowBackTopBtn" />
+      <back-top class="back-top"
+                @click.native="backTop()"
+                :isShow="this.isShowBackTopBtn" />
 
-    <detail-sku-info :class="skuInfoClass" :skuInfo="skuInfo"
-      @closeInventory="closeInventory" @addToCart="addToCart" />
+      <detail-sku-info :class="skuInfoClass"
+                       :skuInfo="skuInfo"
+                       @closeInventory="closeInventory"
+                       @addToCart="addToCart" />
 
-    <detail-bottom-bar @openInventory="openInventory" />
-  </div>
+      <detail-bottom-bar @openInventory="openInventory" />
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -50,12 +67,11 @@ import DetailSkuInfo from 'components/content/skuInfo/SkuInfo.vue'
 import { getDetail, GoodsBaseInfo, ShopInfo, Show, Params, Rate, getRecommend, SkuInfo, Cart }
   from 'network/pageRequest/detail'
 
-import { inCreatedOnScrollRefresh } from 'common/mixin'
-
 export default {
   name: 'detail',
   data () {
     return {
+      loading: true, // 是否正在加载
       iid: '',
       topImages: [], // 轮播图
       scrollEle: [], // 需要定位的元素
@@ -88,11 +104,15 @@ export default {
     DetailSkuInfo
 
   },
-  mixins: [inCreatedOnScrollRefresh],
   methods: {
     // * 事件处理方法
     backTop () {
       this.$refs.scroll.scrollTo(0, 0)
+    },
+
+    refresh () {
+      // 为当前路由时才进行刷新
+      this.$refs.scroll.refresh()
     },
 
     scroll () {
@@ -106,13 +126,13 @@ export default {
     // 打开库存信息
     openInventory () {
       this.isShowSkuInfo = true
-      this.$bus.$emit('pageDormant') // 开启页面休眠
+      this.$overlay.showOverlay()
     },
 
     // 关闭库存信息
     closeInventory () {
       this.isShowSkuInfo = false
-      this.$bus.$emit('cancelPageDormant') // 关闭页面休眠
+      this.$overlay.hideOverlay()
     },
 
     // 添加商品至购物车
@@ -155,7 +175,11 @@ export default {
         this.show = new Show(data.detailInfo.detailImage[0].list, data.detailInfo.desc)
 
         // 商品参数信息
-        this.params = new Params(data.itemParams.rule.tables[0], data.itemParams.info.set, data.itemParams.rule.desc)
+        if ('rule' in data.itemParams) {
+          this.params = new Params({ tables: data.itemParams.rule.tables[0], info: data.itemParams.info.set, desc: data.itemParams.rule.desc })
+        } else if ('info' in data.itemParams) {
+          this.params = new Params({ info: data.itemParams.info.set })
+        }
 
         // 评价信息
         this.haveRate = data.rate.cRate > 0
@@ -163,6 +187,8 @@ export default {
 
         // 库存信息
         this.skuInfo = new SkuInfo(data.skuInfo)
+
+        this.loading = false // 加载完成
       })
 
     getRecommend()
@@ -170,18 +196,28 @@ export default {
         this.recommendList = res.data.list
       })
   },
-  mounted () {
-    const refs = this.$refs
-
-    // 传递需要定位的元素
-    this.scrollEle = [refs.scroll.$el, refs.show.$el, refs.params.$el, refs.recommend.$el]
-  },
   computed: {
     skuInfoClass () {
       return {
         'sku-info-unfold': this.isShowSkuInfo
       }
     }
+  },
+  watch: {
+    loading () {
+      this.$nextTick(() => {
+        const refs = this.$refs
+        // 传递需要定位的元素
+        this.scrollEle = [refs.scroll.$el, refs.show.$el, refs.params.$el, refs.recommend.$el]
+      })
+    }
+  },
+  mounted () {
+    this.$overlay.$on('hideOverlay', this.closeInventory)
+  },
+  updated () {
+    // 结构改变刷新高度
+    this.refresh()
   }
 }
 </script>
@@ -204,5 +240,17 @@ export default {
 
 .sku-info-unfold {
   transform: translateY(0);
+}
+
+.van-slide-right-enter-active {
+  transition: opacity 0.5s;
+}
+
+.van-slide-right-enter {
+  opacity: 0;
+}
+
+.van-slide-right-leave-active {
+  animation: none;
 }
 </style>

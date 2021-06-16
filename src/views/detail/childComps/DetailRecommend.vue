@@ -2,9 +2,12 @@
   <detail-box class="detail-box">
     <div class="title">热门推荐</div>
     <div class="separator"></div>
-    <waterfall-flow ref="waterfallFlow" class="waterfall-flow">
-      <commodity-box :info="item" v-for="(item,index) in recommendList"
-        :key="index" />
+    <waterfall-flow ref="waterfallFlow"
+                    class="waterfall-flow"
+                    v-if="recommendList.length>0">
+      <commodity-box :info="item"
+                     v-for="(item,index) in recommendList"
+                     :key="index" />
     </waterfall-flow>
   </detail-box>
 </template>
@@ -13,8 +16,6 @@
 import WaterfallFlow from 'components/common/waterfallFlow/waterfallFlow.vue'
 import CommodityBox from 'components/content/commodityBox/CommodityBox.vue'
 import DetailBox from './DetailBox.vue'
-
-import { inCreatedOnWaterfallFlowRefresh } from 'common/mixin'
 
 export default {
   props: {
@@ -29,8 +30,7 @@ export default {
     WaterfallFlow,
     CommodityBox,
     DetailBox
-  },
-  mixins: [inCreatedOnWaterfallFlowRefresh]
+  }
 }
 </script>
 

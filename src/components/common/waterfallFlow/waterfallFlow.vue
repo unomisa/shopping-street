@@ -55,6 +55,7 @@ export default {
       })
     }
   },
+  // 这个组件的挂载将会在包裹元素之后
   mounted () {
     this.createMacy()
     this.addEvent()

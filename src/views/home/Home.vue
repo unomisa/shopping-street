@@ -2,12 +2,17 @@
   <div class="home">
     <nav-bar class="home-nav"><template v-slot:center>购物街</template></nav-bar>
 
-    <tab-control class="home-tab-control" :category="['流行','新款','精选']"
-      :currentIndex.sync="currentCategoryIndex"
-      v-show="isTabControlCloneShow" />
+    <tab-control class="home-tab-control"
+                 :category="['流行','新款','精选']"
+                 :currentIndex.sync="currentCategoryIndex"
+                 v-show="isTabControlCloneShow" />
 
-    <scroll class="content" ref="scroll" :probeType="3" :pullUpLoad="true"
-      @scroll="scroll" @pullingUp='loadMore'>
+    <scroll class="content"
+            ref="scroll"
+            :probeType="3"
+            :pullUpLoad="true"
+            @scroll="scroll"
+            @pullingUp='loadMore'>
 
       <home-swiper :banners="banners" />
 
@@ -16,17 +21,22 @@
       <home-feature-view />
 
       <tab-control :category="['流行','新款','精选']"
-        :currentIndex.sync="currentCategoryIndex" ref="tabControl" />
+                   :currentIndex.sync="currentCategoryIndex"
+                   ref="tabControl" />
 
       <keep-alive>
         <home-product-display-view :goods="goods[currentCategoryIndex].list"
-          @refresh='refresh' @saveScrollHeight="saveScrollHeight"
-          @scrollTo="scrollTo" :key="currentCategoryIndex" ref="productDisplay"
-          v-if='goods[currentCategoryIndex].list.length!==0' />
+                                   @refresh='refresh'
+                                   @saveScrollHeight="saveScrollHeight"
+                                   @scrollTo="scrollTo"
+                                   :key="currentCategoryIndex"
+                                   ref="productDisplay"
+                                   v-if='goods[currentCategoryIndex].list.length!==0' />
       </keep-alive>
     </scroll>
 
-    <back-top @click.native="backTop" :isShow="showBackTopBth" />
+    <back-top @click.native="backTop"
+              :isShow="showBackTopBth" />
   </div>
 </template>
 <script>

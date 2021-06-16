@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <my-swiper class="swiper">
+  <div class="swiper-box">
+    <my-swiper class="swiper" v-if="banners.length>0">
       <my-swiper-item v-for="(item,index) in banners" :key="index">
         <img :src="item" alt="展示图片" @load="imageLoad">
       </my-swiper-item>
@@ -31,9 +31,14 @@ export default {
 
 <style lang="less" scoped>
 .swiper {
-  height: 350px;
+  height: inherit;
+
   img {
     object-fit: cover;
+  }
+
+  &-box {
+    height: 350px;
   }
 }
 </style>

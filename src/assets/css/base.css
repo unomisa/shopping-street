@@ -6,9 +6,8 @@
   --color-background: #fff;
   --font-size: 14px;
   --line-height: 1.5;
-  /* px-to-viewport-ignore-next */
   --nav-bar: 44PX;
-  /* px-to-viewport-ignore-next */
+  --nav-bar-title: 20PX;
   --tab-bar: 49PX;
 }
 
@@ -59,6 +58,21 @@ a {
   float: right;
 }
 
+
 ul {
   list-style: none;
+}
+
+
+/* 通用样式 */
+.font-small {
+  font-size: 13px;
+}
+
+.font-medium {
+  font-size: 18px;
+}
+
+.font-big {
+  font-size: 20px;
 }

@@ -2,21 +2,27 @@
   <div class="sku-info">
 
     <div class="head">
-      <div class="close-btn" @click="closeInventory"></div>
+      <div class="close-btn"
+           @click="closeInventory"></div>
       <div class="img-box">
-        <img :src="currentSku.img" class="head-img" :key="skuInfo.iid">
+        <img :src="currentSku.img"
+             class="head-img"
+             :key="skuInfo.iid"
+             @click="imagePreview(currentSku.img)">
       </div>
 
       <span class="head-price">{{currentSku.nowPrice}}</span>
     </div>
 
-    <scroll class="content" ref="scroll">
+    <scroll class="content"
+            ref="scroll">
       <div class="size">
-        <div>尺码</div>
+        <div>尺码 / 大小 ({{sizeLength}}) </div>
         <div class="size-box">
           <div :class="sizeBtnClass(index)"
-            v-for="(item,index) in skuInfo.sizeList" :key="index"
-            @click="setSizeIndex(index)">
+               v-for="(item,index) in skuInfo.sizeList"
+               :key="index"
+               @click="setSizeIndex(index)">
             {{item.name}}</div>
         </div>
       </div>
@@ -27,8 +33,9 @@
         <div>颜色 / 类型 ({{colorListLength}})</div>
         <div class="color-box">
           <div :class="colorBtnClass(index)"
-            v-for="(item,index) in skuInfo.colorList" :key="index"
-            @click="setColorIndex(index)">
+               v-for="(item,index) in skuInfo.colorList"
+               :key="index"
+               @click="setColorIndex(index)">
             <div>{{item.name}}</div>
           </div>
         </div>
@@ -36,19 +43,26 @@
 
       <div class="separator" />
 
-      <div class="count" v-if="!$route.path.includes('cart')">
+      <div class="count"
+           v-if="!$route.path.includes('cart')">
         <span>购买数量</span>
         <span class="inventory">库存{{currentSku.stock}}件</span>
-        <add-sub-btn class="buy-count-calc" :count='buyCount'
-          @addCount="addCount" @subCount="subCount" />
+        <add-sub-btn class="buy-count-calc"
+                     :count='buyCount'
+                     @addCount="addCount"
+                     @subCount="subCount" />
       </div>
 
-      <div class="separator" v-if="!$route.path.includes('cart')" />
+      <div class="separator"
+           v-if="!$route.path.includes('cart')" />
 
     </scroll>
 
     <div class="bottom-bar">
-      <div class="confirm" @click="addToCart">确认</div>
+      <van-button type="danger"
+                  class="confirm"
+                  round
+                  @click="addToCart">确认</van-button>
     </div>
 
   </div>
@@ -58,6 +72,7 @@
 import Scroll from 'components/common/scroll/Scroll.vue'
 import AddSubBtn from 'components/common/miniComps/addSubBtn.vue'
 import { imageLoad } from 'common/mixin'
+import { ImagePreview } from 'vant'
 
 export default {
   mixins: [imageLoad],
@@ -122,11 +137,19 @@ export default {
     // 购买数量减少
     subCount () {
       this.buyCount--
+    },
+
+    // 图片预览
+    imagePreview (url) {
+      ImagePreview([url])
     }
   },
   computed: {
     colorListLength () {
       return 'colorList' in this.skuInfo ? this.skuInfo.colorList.length : 0
+    },
+    sizeLength () {
+      return 'sizeList' in this.skuInfo ? this.skuInfo.sizeList.length : 0
     },
     sizeBtnClass () {
       return function (index) {
@@ -348,15 +371,9 @@ export default {
 
 // 确认按钮样式
 .confirm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 80%;
+  width: 90%;
   height: 80%;
-  border-radius: 1rem;
   font-size: 1.5rem;
-  text-align: center;
-  color: white;
   background-color: var(--color-high-text);
 }
 

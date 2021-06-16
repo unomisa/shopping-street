@@ -1,24 +1,55 @@
 <template>
   <div class="bottom-bar">
     <div class="box-left"><span :class="selectAllClass"
-        @click="checkAll($event)"></span><span class="text">全选</span></div>
-    <div><span class="small">合计：<span class="price-color">¥ </span></span>
-      <span class="price">{{parseInt(total)}}<span v-show="decimalPart">.</span>
-        <span class="small">{{decimalPart}}</span></span>
+            @click="checkAll($event)"></span><span class="text">全选</span>
     </div>
-    <div class="box-right">
-      <div class="settle-accounts-left">结</div>
-      <div class="settle-accounts-right">算({{selectedGoodsLength}})</div>
+
+    <div class="settle-accounts-box"
+         v-show="!isEdit">
+      <div><span class="small">合计：<span class="price-color">¥ </span></span>
+        <span class="price">{{parseInt(total)}}<span
+                v-show="decimalPart">.</span>
+          <span class="small">{{decimalPart}}</span></span>
+      </div>
+      <div class="box-right">
+        <van-button type="danger"
+                    class="settle-accounts-btn"
+                    round
+                    @click="settleAccounts">结算({{selectedGoodsLength}})
+        </van-button>
+      </div>
     </div>
+
+    <div v-show="isEdit">
+      <van-button plain
+                  hairline
+                  round
+                  size="small"
+                  type="danger"
+                  icon="delete-o"
+                  @click="removeGoods">删除({{selectedGoodsLength}})</van-button>
+    </div>
+
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
+
 import { isFloat } from 'common/utils'
 
 export default {
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
+    ...mapMutations([
+      'deleteGoods'
+    ]),
+
     checkAll (event) {
       this.$bus.$emit('checkAll', event)
     },
@@ -32,6 +63,21 @@ export default {
         }
       }
       return true
+    },
+
+    // 删除选中商品
+    removeGoods () {
+      this.deleteGoods()
+
+      // 在文档发生变化后发出更新高度请求
+      this.$nextTick(() => {
+        this.$bus.$emit('CartScrollRefresh')
+      })
+    },
+
+    // 进入结算页面
+    settleAccounts () {
+      this.$router.push('/indent')
     }
   },
   computed: {
@@ -48,14 +94,6 @@ export default {
 
     // 总价
     total () {
-      // return this.cart.reduce((sum, cartItem) => {
-      //   return cartItem.reduce((sum, currentItem) => {
-      //     if (currentItem.isChecked) {
-      //       sum += parseFloat(currentItem.price.slice(1)) * currentItem.buyCount
-      //     }
-      //     return sum
-      //   }, sum)
-      // }, 0)
       let total = 0
       for (const cartItem of this.cart) {
         total += cartItem.filter(item => item.isChecked)
@@ -142,27 +180,14 @@ export default {
 }
 
 .settle-accounts {
-  color: white;
-  background-color: var(--color-tint);
-  display: flex;
-  align-items: center;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-
-  @borderRadius: 16px;
-  @sidePadding: 1rem;
-  &-left {
-    &:extend(.settle-accounts);
-    padding-left: @sidePadding;
-    border-top-left-radius: @borderRadius;
-    border-bottom-left-radius: @borderRadius;
+  &-box {
+    display: flex;
+    align-items: center;
   }
 
-  &-right {
-    &:extend(.settle-accounts);
-    padding-right: @sidePadding;
-    border-top-right-radius: @borderRadius;
-    border-bottom-right-radius: @borderRadius;
+  &-btn {
+    width: 80px;
+    height: 38px;
   }
 }
 

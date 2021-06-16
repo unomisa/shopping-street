@@ -1,42 +1,42 @@
 <template>
   <div>
-    <nav-bar class="nav-bar">
-      <template v-slot:center>
-        <span>购物车({{cartLength}})</span>
-      </template>
-    </nav-bar>
+    <cart-nav-bar :isEdit.sync="isEdit" />
 
     <cart-content @modifyParameter="modifyParameter" />
 
-    <cart-bottom-bar />
+    <cart-bottom-bar :isEdit="isEdit" />
 
-    <sku-info :class="skuInfoClass" :skuInfo="skuInfo "
-      @closeInventory="closeInventory" @addToCart="cartChange" />
+    <sku-info :class="skuInfoClass"
+              :skuInfo="skuInfo "
+              @closeInventory="closeInventory"
+              @addToCart="cartChange" />
 
   </div>
 </template>
 <script>
-import NavBar from 'components/common/navbar/NavBar.vue'
-import CartContent from './childComps/CartContent.vue'
-import CartBottomBar from './childComps/CartBottomBar.vue'
 
 import SkuInfo from 'components/content/skuInfo/SkuInfo'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { getDetail, SkuInfo as SkuInfoClass } from 'network/pageRequest/detail'
 
+import CartContent from './childComps/CartContent.vue'
+import CartBottomBar from './childComps/CartBottomBar.vue'
+import CartNavBar from './childComps/CartNavBar.vue'
+
 export default {
   components: {
-    NavBar,
     CartContent,
     CartBottomBar,
-    SkuInfo
+    SkuInfo,
+    CartNavBar
   },
   data () {
     return {
       skuInfo: {},
       modifyParameterGoods: {},
-      isShowSkuInfo: false
+      isShowSkuInfo: false,
+      isEdit: false
     }
   },
   computed: {
@@ -66,15 +66,17 @@ export default {
           const data = res.result
           this.skuInfo = new SkuInfoClass(data.skuInfo, item.iid)
           this.isShowSkuInfo = true
-          this.$bus.$emit('pageDormant')
+          this.$overlay.showOverlay()
         })
     },
 
     // 关闭库存信息
     closeInventory () {
       this.isShowSkuInfo = false
-      this.$bus.$emit('cancelPageDormant') // 关闭页面休眠
+      this.$overlay.hideOverlay()
     },
+
+    //
 
     // 确认修改购物车数据
     cartChange (currentSku) {
@@ -86,16 +88,16 @@ export default {
           this.$toast.show(message)
         })
     }
+  },
+  mounted () {
+    this.$overlay.$on('hideOverlay', this.closeInventory)
+  },
+  activated () {
+    this.isEdit = false
   }
 }
 </script>
 <style lang="less" scoped>
-.nav-bar {
-  color: white;
-  background-color: var(--color-tint);
-  font-size: 18px;
-}
-
 .sku-info-unfold {
   transform: translateY(0);
 }

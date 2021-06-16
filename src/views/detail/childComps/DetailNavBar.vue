@@ -2,14 +2,17 @@
   <div>
     <nav-bar>
       <template v-slot:left>
-        <div class="back" @click="back">
+        <div class="back"
+             @click="back">
           <img src="~/assets/img/common/back.svg">
         </div>
       </template>
       <template v-slot:center>
         <div class="title">
-          <span v-for="(item,index) in titles" :class="titleStyle(index)"
-            :key="index" @click="setCurrentIndex(index)">{{item}}</span>
+          <span v-for="(item,index) in titles"
+                :class="titleStyle(index)"
+                :key="index"
+                @click="setCurrentIndex(index)">{{item}}</span>
         </div>
       </template>
     </nav-bar>
@@ -46,8 +49,10 @@ export default {
   },
   methods: {
     setCurrentIndex (index) {
-      this.currentIndex = index
       this.scroll.scrollToElement(this.target[index], 300)
+      setTimeout(() => {
+        console.log('距离位置:', this.target[index].getBoundingClientRect().top)
+      }, 400)
     },
     back () {
       this.$router.back()
@@ -68,11 +73,13 @@ export default {
       // 根据滚动判断在哪个模块，以当前元素为参照
       this.scroll.bscroll.on('scroll', () => {
         const target = this.target[this.currentIndex]
-        if (target.getBoundingClientRect().top > this.$store.state.navBarHeight) {
+        if (target.getBoundingClientRect().top > this.$store.state.navBarHeight + 1) {
+          console.log('target: ', target.getBoundingClientRect().top)
           this.currentIndex--
         } else if (this.currentIndex + 1 < this.target.length) {
           const next = this.target[this.currentIndex + 1]
           if (next.getBoundingClientRect().top < this.$store.state.navBarHeight + 1) {
+            console.log('next: ', next.getBoundingClientRect().top)
             this.currentIndex++
           }
         }

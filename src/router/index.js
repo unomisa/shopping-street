@@ -6,8 +6,13 @@ Vue.use(VueRouter)
 const Home = () => import('views/home/Home')
 const Cart = () => import('views/cart/Cart.vue')
 const Category = () => import('views/category/Category.vue')
+
 const Profile = () => import('views/profile/Profile.vue')
+const Setting = () => import('views/profile/childComps/ProfileSetting')
+
 const Detail = () => import('views/detail/Detail')
+const Login = () => import('views/Login/Login')
+const Indent = () => import('views/Indent/Indent')
 
 const routes = [
   {
@@ -40,11 +45,28 @@ const routes = [
     component: Profile,
     meta: {
       title: '我的'
-    }
+    },
+    children: [
+      {
+        path: 'setting',
+        component: Setting,
+        meta: {
+          title: '设置'
+        }
+      }
+    ]
   },
   {
     path: '/detail/:iid',
     component: Detail
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/indent',
+    component: Indent
   }
 ]
 

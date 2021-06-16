@@ -1,47 +1,69 @@
 <template>
-  <scroll class="content" ref="scroll" :probeType="2" @scroll="scroll">
-    <fillet-box id='fillet-box' class="box" v-for="(cartItem,index) in cart"
-      :key="index">
+  <scroll class="content"
+          ref="scroll"
+          :probeType="2"
+          @scroll="scroll">
+    <fillet-box id='fillet-box'
+                v-for="(cartItem,index) in cart"
+                :key="index"
+                class="box">
       <div class="box-shop">
         <div :class="shopCheckClass(cartItem)"
-          @click="checkShopAll(cartItem,$event)" ref="select"></div>
+             @click="checkShopAll(cartItem,$event)"
+             ref="select"></div>
 
         {{cartItem[0].shopName}}
         <div class="shop-more"></div>
       </div>
 
-      <div class="box-content" v-for="(item,index) in cartItem" :key="index">
-        <div class='select-goods' :class="{checked: item.isChecked}"
-          @click="check(item)" ref="select">
+      <div class="box-content"
+           v-for="(item,index) in cartItem"
+           :key="index"
+           @click="contentClick(item,$event)">
+        <div class='select-goods'
+             :class="{checked: item.isChecked}"
+             @click="check(item)"
+             ref="select">
         </div>
 
         <div class="box-img">
-          <img class="img" :src="item.img">
+          <img class="img"
+               :src="item.img"
+               @click="imagePreview(item.img)">
         </div>
-        <div class="box-info">
-          <div class="goods-title">{{item.title}}</div>
 
-          <div class="goods-parameter" @click="modifyParameter(item)">
+        <div class="box-info"
+             ref="toInfo">
+          <div class="goods-title"
+               ref="toInfo">{{item.title}}
+          </div>
+
+          <div class="goods-parameter"
+               @click="modifyParameter(item)">
             <span class="cut-out">{{item.size}} , {{item.style}}</span>
           </div>
 
-          <div class="goods-price">
+          <div class="goods-price"
+               ref="toInfo">
             <span class="small">{{priceStart(item)}}</span>
             {{priceContent(item)}}<span class="small">{{priceEnd(item)}}</span>
           </div>
 
-          <div class="buy-count-box" @click="showCalcBtn(item)"
-            v-if='!isShowCalcBtn(item)'>
+          <div class="buy-count-box"
+               @click="showCalcBtn(item)"
+               v-if='!isShowCalcBtn(item)'>
             ×{{item.buyCount}}
           </div>
 
-          <add-sub-btn class="buy-count-calc" :count="item.buyCount"
-            v-if='isShowCalcBtn(item)' @addCount="addCount(item)"
-            @subCount="subCount(item)" />
+          <add-sub-btn class="buy-count-calc"
+                       :count="item.buyCount"
+                       v-if='isShowCalcBtn(item)'
+                       @addCount="addCount(item)"
+                       @subCount="subCount(item)" />
         </div>
       </div>
-
     </fillet-box>
+
   </scroll>
 </template>
 
@@ -52,6 +74,7 @@ import AddSubBtn from 'components/common/miniComps/addSubBtn.vue'
 
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { isFloat } from 'common/utils'
+import { ImagePreview } from 'vant'
 
 export default {
   components: {
@@ -66,6 +89,10 @@ export default {
   },
   methods: {
     // * 事件处理方法
+    refresh () {
+      this.$refs.scroll.refresh()
+      console.log('滚动高度刷新')
+    },
 
     // 点击，判断商品是否被选中
     check (item) {
@@ -127,6 +154,16 @@ export default {
     // 修改参数
     modifyParameter (item) {
       this.$emit('modifyParameter', item)
+    },
+
+    // 图片预览
+    imagePreview (url) {
+      ImagePreview([url])
+    },
+
+    contentClick (item, event) {
+      // 跳转至商品详情
+      this.$refs.toInfo.includes(event.target) && this.$router.push(`/detail/${item.iid}`)
     },
 
     ...mapMutations([
@@ -195,6 +232,10 @@ export default {
         return item.isShowCalcBtn
       }
     }
+  },
+  created () {
+    // 添加监听购物车高度刷新
+    this.$bus.$on('CartScrollRefresh', this.refresh)
   },
   activated () {
     this.$refs.scroll.refresh()

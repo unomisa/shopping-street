@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <fillet-box>
 
-  </div>
+  </fillet-box>
 </template>
 
 <script>
+import FilletBox from '../../../components/common/filletBox/FilletBox.vue'
 export default {
+  components: { FilletBox }
 
 }
 </script>

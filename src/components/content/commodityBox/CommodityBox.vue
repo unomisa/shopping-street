@@ -1,7 +1,14 @@
 <template>
-  <div class="commondity-box" @click="routeSwitch">
-    <div :style="{'padding-top': aspectRatio}" class="aspect-ratio-box">
-      <img class="aspect-ratio-box-img" v-lazy="image" @load="imageLoad">
+  <div class="commondity-box"
+       @click="routeSwitch">
+    <div :style="{'padding-top': aspectRatio}"
+         class="aspect-ratio-box">
+      <!-- <img class="aspect-ratio-box-img" v-lazy="image" @load="imageLoad"> -->
+      <van-image class="aspect-ratio-box-img"
+                 :src="image"
+                 lazy-load
+                 radius="10"
+                 @load="imageLoad" />
     </div>
 
     <div class="commondity-box-info">

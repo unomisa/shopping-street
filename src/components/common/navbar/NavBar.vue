@@ -37,7 +37,7 @@ export default {
 }
 
 .left {
-  width: 60px;
+  width: 70px;
 }
 
 .center {

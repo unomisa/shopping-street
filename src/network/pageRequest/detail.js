@@ -72,10 +72,10 @@ export class Show{
 }
 
 export class Params{
-  constructor(tables,info,desc){
-    this.tables=tables
-    this.info=info
-    this.desc=desc
+  constructor({tables=[],info=[],desc=''}){
+   if(tables.length!==0){this.tables=tables}
+   if(info.length!==0){this.info=info}
+   if(desc.length!==0) {this.desc=desc}
   }
 }
 

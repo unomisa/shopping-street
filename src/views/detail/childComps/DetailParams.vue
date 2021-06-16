@@ -1,6 +1,6 @@
 <template>
   <div>
-    <detail-box>
+    <detail-box v-if="'tables' in params && params.tables.length!==0">
       <table class="params-table">
         <tr v-for="(item,index) in params.tables" :key="index">
           <td class="column" v-for="(td,tdIndex) in item" :key="tdIndex">
@@ -11,7 +11,7 @@
       <div class="params-desc">{{params.desc}}</div>
     </detail-box>
 
-    <detail-box>
+    <detail-box v-if="'info' in params && params.info.length!==0">
       <table class="params-info">
         <tr class="info-row" v-for="(item,index) in params.info" :key="index">
           <td class="key">{{item.key}}</td>
