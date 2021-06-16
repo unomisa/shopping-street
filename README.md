@@ -1,19 +1,22 @@
-# shopping-street
+# 
 
-## Project setup
+## 简介
+ 基于 coderwhy 老师 vue.js 课程搭建的移动端购物网站
+
+## 额外的功能与优化
+
+1. 所有页面的样式优化
+2. 解决 better-scroll 框架所有问题
+3. 完成商品图片懒加载及基于 Macy 框架完成的 **动态瀑布流展示**
+4. 点击控制栏跳转不同商品类型后 **保存** 上次商品类型位置
+5. 添加加入购物车时选择 **样式及尺码** 弹出窗及图片点击预览
+6. 购物车点击商品尺码颜色信息以 **修改** 参数以及删除商品
+7. 及更多...
+
+## 启动项目
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
