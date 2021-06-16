@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     setting () {
-      this.$router.push('/profile/setting')
+      // this.$router.push('/profile/setting')
     }
   },
   watch: {

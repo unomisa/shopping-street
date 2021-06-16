@@ -50,9 +50,6 @@ export default {
   methods: {
     setCurrentIndex (index) {
       this.scroll.scrollToElement(this.target[index], 300)
-      setTimeout(() => {
-        console.log('距离位置:', this.target[index].getBoundingClientRect().top)
-      }, 400)
     },
     back () {
       this.$router.back()
@@ -74,12 +71,10 @@ export default {
       this.scroll.bscroll.on('scroll', () => {
         const target = this.target[this.currentIndex]
         if (target.getBoundingClientRect().top > this.$store.state.navBarHeight + 1) {
-          console.log('target: ', target.getBoundingClientRect().top)
           this.currentIndex--
         } else if (this.currentIndex + 1 < this.target.length) {
           const next = this.target[this.currentIndex + 1]
           if (next.getBoundingClientRect().top < this.$store.state.navBarHeight + 1) {
-            console.log('next: ', next.getBoundingClientRect().top)
             this.currentIndex++
           }
         }
